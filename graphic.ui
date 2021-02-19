@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>YandexAPI_maps</class>
+ <widget class="QMainWindow" name="YandexAPI_maps">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -46,7 +46,26 @@
            <property name="rightMargin">
             <number>10</number>
            </property>
-           <item row="0" column="0">
+           <item row="2" column="1">
+            <widget class="QLabel" name="map">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <property name="spacing">
               <number>10</number>
@@ -73,26 +92,26 @@
                </property>
               </widget>
              </item>
+             <item>
+              <widget class="QComboBox" name="type_map_box">
+               <item>
+                <property name="text">
+                 <string>схема</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>спутник</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>гибрид</string>
+                </property>
+               </item>
+              </widget>
+             </item>
             </layout>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="map">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="layoutDirection">
-              <enum>Qt::LeftToRight</enum>
-             </property>
-             <property name="autoFillBackground">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
            </item>
           </layout>
          </item>
