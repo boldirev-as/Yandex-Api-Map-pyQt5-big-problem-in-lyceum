@@ -3,10 +3,10 @@ import sys
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
-from map_geo_coords_api import get_map_from_coords
+from map_geo_coords_api import get_map_from_coords, get_size_toponym, get_map_from_text
 
 from PyQt5 import uic  # Импортируем uic
-from PyQt5.QtWidgets import QApplication, QMainWindow, QComboBox
+from PyQt5.QtWidgets import QApplication, QMainWindow
 
 
 class MyWidget(QMainWindow):
@@ -15,30 +15,48 @@ class MyWidget(QMainWindow):
 
         self.spn = [0.0025, 0.0025]
         self.min_spn = [0.0005, 0.0005]
-        self.place = [int, [0, 0]]
+        self.place = [0, 0]
+        self.pts = []
         self.types_maps = {"спутник": "sat", "гибрид": "sat,skl", "схема": "map"}
+        self.first_search = True
 
         uic.loadUi('graphic.ui', self)
         self.search_btn.clicked.connect(self.clicked_btn_search)
         self.type_map_box.currentTextChanged.connect(self.search)
+        self.search_text_btn.clicked.connect(self.clicked_btn_search_text)
 
-    def get_new_coords(self):
-        self.place[1] = \
-            list(reversed(list(map(float, self.line_enter_coords.text().replace(" ", "").split(",")))))
+    def clicked_btn_search_text(self):
+        try:
+            self.place = self.line_enter_keyword.text()
+        except Exception as e:
+            print(e)
+
+        request = get_map_from_text(self.place,
+                                    l=self.types_maps[self.type_map_box.currentText()],
+                                    pt=self.pts)
+
+        self.spn = get_size_toponym(request[1])
+        self.place = request[2]
+        self.pts.append(f"{self.place[0]},{self.place[1]},pm2rdm{len(self.pts) + 1}")
+        pixmap = QPixmap()
+        pixmap.loadFromData(request[0])
+        self.map.setPixmap(pixmap)
 
     def clicked_btn_search(self):
         try:
-            self.get_new_coords()
+            self.place = \
+                list(reversed(list(map(float, self.line_enter_coords.text().replace(" ", "").split(",")))))
         except Exception as e:
             print(e)
         self.search()
 
     def search(self):
+        print(self.pts)
         image = get_map_from_coords(
-            self.place[1],
-            type_in=self.place[0],
+            self.place,
             spn=self.spn,
-            l=self.types_maps[self.type_map_box.currentText()]
+            l=self.types_maps[self.type_map_box.currentText()],
+            pt=self.pts
         )
         pixmap = QPixmap()
         pixmap.loadFromData(image)
@@ -46,20 +64,22 @@ class MyWidget(QMainWindow):
 
     def keyPressEvent(self, event):
         flag = True
+        k_0 = self.spn[0] * 0.3
+        k_1 = self.spn[1] * 0.3
         if event.key() == Qt.Key_PageUp:
-            self.spn[0] += 0.001
-            self.spn[1] += 0.001
+            self.spn[0] += k_0
+            self.spn[1] += k_1
         elif event.key() == Qt.Key_PageDown:
-            self.spn[0] = max(self.spn[0] - 0.001, self.min_spn[0])
-            self.spn[1] = max(self.spn[1] - 0.001, self.min_spn[1])
+            self.spn[0] = max(self.spn[0] - k_0, self.min_spn[0])
+            self.spn[1] = max(self.spn[1] - k_1, self.min_spn[1])
         elif event.key() == Qt.Key_Down:
-            self.place[1][1] -= 0.001
+            self.place[1] -= k_1
         elif event.key() == Qt.Key_Up:
-            self.place[1][1] += 0.001
+            self.place[1] += k_1
         elif event.key() == Qt.Key_Left:
-            self.place[1][0] -= 0.001
+            self.place[0] -= k_0
         elif event.key() == Qt.Key_Right:
-            self.place[1][0] += 0.001
+            self.place[0] += k_0
         else:
             flag = False
 

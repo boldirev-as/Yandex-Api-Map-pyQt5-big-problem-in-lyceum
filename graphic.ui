@@ -46,7 +46,7 @@
            <property name="rightMargin">
             <number>10</number>
            </property>
-           <item row="2" column="1">
+           <item row="2" column="0">
             <widget class="QLabel" name="map">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -65,7 +65,7 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
+           <item row="0" column="0">
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <property name="spacing">
               <number>10</number>
@@ -88,7 +88,7 @@
              <item>
               <widget class="QPushButton" name="search_btn">
                <property name="text">
-                <string>Поиск</string>
+                <string>Поиск по координатам</string>
                </property>
               </widget>
              </item>
@@ -109,6 +109,20 @@
                  <string>гибрид</string>
                 </property>
                </item>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="1" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QLineEdit" name="line_enter_keyword"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="search_text_btn">
+               <property name="text">
+                <string>Поиск по ключевому слову</string>
+               </property>
               </widget>
              </item>
             </layout>
