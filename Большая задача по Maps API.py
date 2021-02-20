@@ -24,6 +24,11 @@ class MyWidget(QMainWindow):
         self.search_btn.clicked.connect(self.clicked_btn_search)
         self.type_map_box.currentTextChanged.connect(self.search)
         self.search_text_btn.clicked.connect(self.clicked_btn_search_text)
+        self.reboot_search_btn.clicked.connect(self.clear_pts)
+
+    def clear_pts(self):
+        self.pts = []
+        self.search()
 
     def clicked_btn_search_text(self):
         try:
@@ -33,11 +38,11 @@ class MyWidget(QMainWindow):
 
         request = get_map_from_text(self.place,
                                     l=self.types_maps[self.type_map_box.currentText()],
-                                    pt=self.pts)
+                                    pt=None)
 
         self.spn = get_size_toponym(request[1])
         self.place = request[2]
-        self.pts.append(f"{self.place[0]},{self.place[1]},pm2rdm{len(self.pts) + 1}")
+        self.pts = [f"{self.place[0]},{self.place[1]},pm2rdm1"]
         pixmap = QPixmap()
         pixmap.loadFromData(request[0])
         self.map.setPixmap(pixmap)

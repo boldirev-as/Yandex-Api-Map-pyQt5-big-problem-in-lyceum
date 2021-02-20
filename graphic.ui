@@ -125,6 +125,13 @@
                </property>
               </widget>
              </item>
+             <item>
+              <widget class="QPushButton" name="reboot_search_btn">
+               <property name="text">
+                <string>Сброс поискового результата</string>
+               </property>
+              </widget>
+             </item>
             </layout>
            </item>
           </layout>
