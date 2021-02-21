@@ -29,6 +29,7 @@ class MyWidget(QMainWindow):
     def clear_pts(self):
         self.pts = []
         self.search()
+        self.adress_view_label.setText("")
 
     def clicked_btn_search_text(self):
         try:
@@ -40,11 +41,12 @@ class MyWidget(QMainWindow):
                                     l=self.types_maps[self.type_map_box.currentText()],
                                     pt=None)
 
-        self.spn = get_size_toponym(request[1])
-        self.place = request[2]
+        self.spn = request["spn"]
+        self.place = request["coords"]
         self.pts = [f"{self.place[0]},{self.place[1]},pm2rdm1"]
+        self.adress_view_label.setText(request["address"])
         pixmap = QPixmap()
-        pixmap.loadFromData(request[0])
+        pixmap.loadFromData(request["image"])
         self.map.setPixmap(pixmap)
 
     def clicked_btn_search(self):
@@ -57,14 +59,15 @@ class MyWidget(QMainWindow):
 
     def search(self):
         print(self.pts)
-        image = get_map_from_coords(
+        response = get_map_from_coords(
             self.place,
             spn=self.spn,
             l=self.types_maps[self.type_map_box.currentText()],
             pt=self.pts
         )
         pixmap = QPixmap()
-        pixmap.loadFromData(image)
+        pixmap.loadFromData(response["image"])
+        self.adress_view_label.setText(response["address"])
         self.map.setPixmap(pixmap)
 
     def keyPressEvent(self, event):
