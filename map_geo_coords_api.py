@@ -25,7 +25,7 @@ def get_postal_number_toponym(toponym):
 
         json_data = {"query": f"{city}, {name}", "limit": 5, "fromBound": "CITY"}
         resp = requests.post('https://www.pochta.ru/suggestions/v2/suggestion.find-addresses', json=json_data)
-        print("-->", city, name, resp.json())
+        print("-->", city, name)
         return resp.json()[0]['postalCode']
     except Exception as e:
         print("Ошибка выполнения запроса:", e)

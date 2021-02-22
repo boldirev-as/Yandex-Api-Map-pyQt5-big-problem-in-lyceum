@@ -6,18 +6,17 @@ from PyQt5.QtCore import Qt
 from map_geo_coords_api import get_map, get_map_if_text, get_toponym, get_all_inf
 
 from PyQt5 import uic  # Импортируем uic
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QCheckBox
 
 
 class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # index_checkBox.isChecked()
-
         self.spn = [0.0025, 0.0025]
         self.min_spn = [0.0005, 0.0005]
         self.place = [0, 0]
+        self.postal_code = ""
         self.types_maps = {"спутник": "sat", "гибрид": "sat,skl", "схема": "map"}
 
         uic.loadUi('graphic.ui', self)
@@ -25,12 +24,24 @@ class MyWidget(QMainWindow):
         self.type_map_box.currentTextChanged.connect(self.search)
         self.search_text_btn.clicked.connect(self.clicked_btn_search_text)
         self.reboot_search_btn.clicked.connect(self.clear_pts)
+        self.index_checkBox.clicked.connect(self.change_postal_code)
+
+    def change_postal_code(self):
+        print(self.postal_code)
+        text = self.adress_view_label.text()
+        if self.postal_code is not None and self.index_checkBox.isChecked():
+            text += "\n" + self.postal_code
+        elif not self.index_checkBox.isChecked() and self.postal_code is not None:
+            parts = text.split("\n")
+            text = parts[0]
+        self.adress_view_label.setText(text)
 
     def clear_pts(self):
         self.search()
         self.adress_view_label.setText("")
 
     def set_address(self, address, postal_code):
+        self.postal_code = postal_code
         postal_code = postal_code if postal_code is not None and self.index_checkBox.isChecked() else ""
         self.adress_view_label.setText(address + '\n' + postal_code)
 
