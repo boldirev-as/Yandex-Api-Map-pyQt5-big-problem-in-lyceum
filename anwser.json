@@ -1,0 +1,90 @@
+{
+  "metaDataProperty": {
+    "GeocoderMetaData": {
+      "precision": "exact",
+      "text": "Россия, Свердловская область, Екатеринбург, Чкаловский район, микрорайон Ботанический, Родонитовая улица, 28",
+      "kind": "house",
+      "Address": {
+        "country_code": "RU",
+        "formatted": "Россия, Свердловская область, Екатеринбург, Чкаловский район, микрорайон Ботанический, Родонитовая улица, 28",
+        "Components": [
+          {
+            "kind": "country",
+            "name": "Россия"
+          },
+          {
+            "kind": "province",
+            "name": "Уральский федеральный округ"
+          },
+          {
+            "kind": "province",
+            "name": "Свердловская область"
+          },
+          {
+            "kind": "area",
+            "name": "муниципальное образование Город Екатеринбург"
+          },
+          {
+            "kind": "locality",
+            "name": "Екатеринбург"
+          },
+          {
+            "kind": "district",
+            "name": "Чкаловский район"
+          },
+          {
+            "kind": "district",
+            "name": "микрорайон Ботанический"
+          },
+          {
+            "kind": "street",
+            "name": "Родонитовая улица"
+          },
+          {
+            "kind": "house",
+            "name": "28"
+          }
+        ]
+      },
+      "AddressDetails": {
+        "Country": {
+          "AddressLine": "Россия, Свердловская область, Екатеринбург, Чкаловский район, микрорайон Ботанический, Родонитовая улица, 28",
+          "CountryNameCode": "RU",
+          "CountryName": "Россия",
+          "AdministrativeArea": {
+            "AdministrativeAreaName": "Свердловская область",
+            "SubAdministrativeArea": {
+              "SubAdministrativeAreaName": "муниципальное образование Город Екатеринбург",
+              "Locality": {
+                "LocalityName": "Екатеринбург",
+                "DependentLocality": {
+                  "DependentLocalityName": "Чкаловский район",
+                  "DependentLocality": {
+                    "DependentLocalityName": "микрорайон Ботанический",
+                    "Thoroughfare": {
+                      "ThoroughfareName": "Родонитовая улица",
+                      "Premise": {
+                        "PremiseNumber": "28"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "Родонитовая улица, 28",
+  "description": "микрорайон Ботанический, Чкаловский район, Екатеринбург, Свердловская область, Россия",
+  "boundedBy": {
+    "Envelope": {
+      "lowerCorner": "60.623292 56.788584",
+      "upperCorner": "60.631503 56.79309"
+    }
+  },
+  "Point": {
+    "pos": "60.627397 56.790837"
+  }
+}

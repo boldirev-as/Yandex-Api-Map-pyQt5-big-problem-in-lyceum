@@ -14,41 +14,44 @@ def get_size_toponym(toponym):
     return [delta_1, delta_2]
 
 
-def get_map_from_coords(coords, spn=(0.025, 0.025), l="map", pt=None):
-    print("static", pt)
+def get_postal_number_toponym(toponym):
+    try:
+        components = toponym["metaDataProperty"]["GeocoderMetaData"]["Address"]["Components"]
+        city = ""
+        for comp in components:
+            if "locality" == comp["kind"]:
+                city = comp["name"]
+        name = toponym["name"]
+
+        json_data = {"query": f"{city}, {name}", "limit": 5, "fromBound": "CITY"}
+        resp = requests.post('https://www.pochta.ru/suggestions/v2/suggestion.find-addresses', json=json_data)
+        print("-->", city, name, resp.json())
+        return resp.json()[0]['postalCode']
+    except Exception as e:
+        print("Ошибка выполнения запроса:", e)
+        return None
+
+
+def get_map(coords, spn, type_map, pts):
     params = {
         "ll": ",".join(map(str, coords)),
         "spn": ",".join(map(str, spn)),
-        "l": l
+        "l": type_map
     }
-    if pt is not None:
-        params["pt"] = "~".join(pt)
+    if pts is not None:
+        params["pt"] = pts
 
     response = requests.request(method="GET", url=STATIC_API_SERVER,
                                 params=params)
     print(requests.request(method="GET", url=STATIC_API_SERVER,
                            params=params).url)
-    return {"image": response.content, "address": get_toponym(",".join(map(str, coords)))["address"]}
+
+    return response.content
 
 
-def get_map_from_text(text, l="map", pt=None):
-    response = get_toponym(text)
-
-    print("text 1", pt)
-    if pt is not None:
-        pt = pt + [f"{response['coords'].replace(' ', ',')},pm2rdm{len(pt) + 1}"]
-    else:
-        pt = [f"{response['coords'].replace(' ', ',')},pm2rdm1"]
-    print("text 2", pt)
-
-    image = get_map_from_coords(response['coords'].split(" "), spn=response["spn"], l=l, pt=pt)["image"]
-    return {"image": image, "spn": response["spn"], "coords": list(map(float, response['coords'].split())),
-            "address": response["address"]}
-
-
-def get_toponym(search):
+def get_map_if_text(text, type_map):
     params = {
-        "geocode": search,
+        "geocode": text,
         "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
         "format": "json"
     }
@@ -60,7 +63,32 @@ def get_toponym(search):
 
     json_response = response.json()
     toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
-    toponym_address = toponym["metaDataProperty"]["GeocoderMetaData"]["text"]
-    toponym_coodrinates = toponym["Point"]["pos"]
 
-    return {"address": toponym_address, "coords": toponym_coodrinates, "spn": get_size_toponym(toponym)}
+    toponym_coodrinates = list(map(float, toponym["Point"]["pos"].split()))
+    spn = get_size_toponym(toponym)
+    return {"image": get_map(toponym_coodrinates, spn, type_map, f"{','.join(map(str, toponym_coodrinates))},pm2rdm1"),
+            "spn": spn, "coords": toponym_coodrinates, "toponym": toponym}
+
+
+def get_toponym(coords):
+    params = {
+        "geocode": ",".join(map(str, coords)),
+        "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
+        "format": "json"
+    }
+
+    response = requests.request(method="GET", url=GEOCODE_API_SERVER,
+                                params=params)
+    print(requests.request(method="GET", url=GEOCODE_API_SERVER,
+                           params=params).url, "toponym")
+
+    json_response = response.json()
+    toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+    return toponym
+
+
+def get_all_inf(toponym):
+    toponym_address = toponym["metaDataProperty"]["GeocoderMetaData"]["text"]
+
+    return {"address": toponym_address,
+            "postal_code": get_postal_number_toponym(toponym)}
