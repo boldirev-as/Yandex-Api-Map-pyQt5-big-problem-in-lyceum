@@ -1,4 +1,5 @@
 import requests
+import math
 
 STATIC_API_SERVER = "https://static-maps.yandex.ru/1.x/"
 GEOCODE_API_SERVER = "https://geocode-maps.yandex.ru/1.x"
@@ -92,3 +93,56 @@ def get_all_inf(toponym):
 
     return {"address": toponym_address,
             "postal_code": get_postal_number_toponym(toponym)}
+
+
+def get_organizations(coords):
+    search_api_server = "https://search-maps.yandex.ru/v1/"
+    api_key = "dda3ddba-c9ea-4ead-9010-f43fbc15c6e3"
+
+    address_ll = f"{coords[0]},{coords[1]}"
+
+    search_params = {
+        "apikey": api_key,
+        "text": "аптека",
+        "lang": "ru_RU",
+        "ll": address_ll,
+        "type": "biz"
+    }
+
+    response = requests.get(search_api_server, params=search_params)
+    print(requests.get(search_api_server, params=search_params).url)
+    if not response:
+        print("error business")
+    json_response = response.json()
+
+    # Получаем первую найденную организацию.
+    for organization in json_response["features"]:
+        org_name = organization["properties"]["CompanyMetaData"]["name"]
+        # Адрес организации.
+        org_address = organization["properties"]["CompanyMetaData"]["address"]
+
+        # Получаем координаты ответа.
+        point = organization["geometry"]["coordinates"]
+        if lonlat_distance(point, coords) <= 50:
+            print(org_name)
+            return {"name": org_name, "address": org_address,
+                    "coords": list(map(float, point))}
+
+
+def lonlat_distance(a, b):
+
+    degree_to_meters_factor = 111 * 1000  # 111 километров в метрах
+    a_lon, a_lat = a
+    b_lon, b_lat = b
+
+    # Берем среднюю по широте точку и считаем коэффициент для нее.
+    radians_lattitude = math.radians((a_lat + b_lat) / 2.)
+    lat_lon_factor = math.cos(radians_lattitude)
+
+    # Вычисляем смещения в метрах по вертикали и горизонтали.
+    dx = abs(a_lon - b_lon) * degree_to_meters_factor * lat_lon_factor
+    dy = abs(a_lat - b_lat) * degree_to_meters_factor
+    # Вычисляем расстояние между точками.
+    distance = math.sqrt(dx * dx + dy * dy)
+
+    return distance
